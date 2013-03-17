@@ -2,12 +2,12 @@
   "name": "tz-db",
   "version": "0.1.1",
   "description": "Static database of timezone names and offsets scraped from wikipedia, current as of March 2013",
-  "main": "index.js",
-  "dependencies": {
-    "cheerio": "~0.10.8",
-    "underscore": "~1.4.4"
+  "main": "index.json",
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/atuttle/node-tz-db.git"
   },
-  "repository": "",
   "devDependencies": {
     "mocha": "~1.8.2",
     "cheerio": "~0.10.8",
@@ -24,9 +24,9 @@
     "dst",
     "daylight",
     "saving",
-    "time",
-    "daylight"
+    "savings",
+    "time"
   ],
-  "author": "Adam Tuttle",
+  "author": "Adam Tuttle <adam@fusiongrokker.com>",
   "license": "MIT"
 }
