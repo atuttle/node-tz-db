@@ -27,7 +27,12 @@ http.get('http://en.wikipedia.org/wiki/List_of_tz_database_time_zones', function
 			var tz_name = cols['2'].children[0].children[0].data;
 			var tz_std_offset = cols['4'].children[0].children[0].data;
 			var tz_dst_offset = cols['5'].children[0].children[0].data;
-			hashtable[tz_name] = { std: tz_std_offset, dst: tz_dst_offset };
+
+			var seconds_std = parseInt(tz_std_offset.slice(1,3), 10)*60*60 + parseInt(tz_std_offset.slice(4,6), 10)*60;
+			var seconds_dst = parseInt(tz_dst_offset.slice(1,3), 10)*60*60 + parseInt(tz_dst_offset.slice(4,6), 10)*60;
+			if (tz_std_offset.slice(0,1) !== '+') seconds_std = seconds_std * -1;
+			if (tz_dst_offset.slice(0,1) !== '+') seconds_dst = seconds_dst * -1;
+			hashtable[tz_name] = { std: tz_std_offset, dst: tz_dst_offset, std_seconds: seconds_std, dst_seconds: seconds_dst };
 		}
 
 		var sortedKeys = _.sortBy( _.keys(hashtable), function(el){ return el; } )
@@ -39,9 +44,14 @@ http.get('http://en.wikipedia.org/wiki/List_of_tz_database_time_zones', function
 		});
 		fileContent += '],\ntz: {';
 		_.each( sortedKeys, function(el, ix, list){
-			fileContent += '\n"' + el + '": { std: "' + hashtable[el].std + '", dst: "' + hashtable[el].dst + '" }' + ( (ix < numkeys) ? ',' : '' );
+			fileContent += '\n"' + el + '": { std: "' + hashtable[el].std + '",'
+							+ ' dst: "' + hashtable[el].dst + '",'
+							+ ' std_seconds: ' + hashtable[el].std_seconds + ','
+							+ ' dst_seconds: ' + hashtable[el].dst_seconds
+							+ ' }'
+							+ ( (ix < numkeys) ? ',' : '\n' );
 		});
-		fileContent += '}};'
+		fileContent += '}\n};'
 
 		fs.writeFileSync('index.js', fileContent, 'UTF-8');
 
