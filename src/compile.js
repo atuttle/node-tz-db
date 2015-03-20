@@ -24,9 +24,34 @@ http.get('http://en.wikipedia.org/wiki/List_of_tz_database_time_zones', function
 			if (typeof cols['4'] === 'undefined') continue;
 			if (typeof cols['2'].children[0].children === 'undefined') continue;
 
-			var tz_name = cols['2'].children[0].children[0].data;
-			var tz_std_offset = cols['4'].children[0].children[0].data;
-			var tz_dst_offset = cols['5'].children[0].children[0].data;
+			var tz_name, tz_std_offset, tz_dst_offset;
+
+			try{
+				tz_name = cols['2'].children[0].children[0].data;
+			}catch(e){
+				tz_name = '???';
+			}
+
+			try{
+				tz_std_offset = cols['4'].children[0].children[0].data;
+			}catch(e){
+				tz_std_offset = '';
+			}
+
+			try{
+				tz_dst_offset = cols['5'].children[0].children[0].data;
+			}catch(e){
+				tz_dst_offset = '';
+			}
+
+			if (tz_dst_offset == '' && tz_std_offset.length > 0){
+				tz_dst_offset = tz_std_offset;
+			}
+			if (tz_std_offset == '' && tz_dst_offset.length > 0){
+				tz_std_offset = tz_dst_offset;
+			}
+
+			// console.log("%s --- std: %s, dst: %s", tz_name, tz_std_offset, tz_dst_offset);
 
 			var seconds_std = parseInt(tz_std_offset.slice(1,3), 10)*60*60 + parseInt(tz_std_offset.slice(4,6), 10)*60;
 			var seconds_dst = parseInt(tz_dst_offset.slice(1,3), 10)*60*60 + parseInt(tz_dst_offset.slice(4,6), 10)*60;
@@ -51,7 +76,7 @@ http.get('http://en.wikipedia.org/wiki/List_of_tz_database_time_zones', function
 
 		var payload = { zones: sortedKeys, tz: hashtable };
 
-		fs.writeFileSync('index.json', JSON.stringify(payload), 'UTF-8');
+		fs.writeFileSync('index.json', JSON.stringify(payload, null, 2), 'UTF-8');
 
 	});
 
