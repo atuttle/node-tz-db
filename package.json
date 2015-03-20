@@ -1,7 +1,7 @@
 {
   "name": "tz-db",
   "version": "0.3.0",
-  "description": "Static database of timezone names and offsets scraped from wikipedia, current as of March 2013",
+  "description": "Static database of timezone names and offsets scraped from wikipedia, current as of January 2015",
   "main": "index.json",
   "dependencies": {},
   "repository": {
